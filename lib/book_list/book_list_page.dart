@@ -61,12 +61,14 @@ class BookListPage extends StatelessWidget {
                     label: '編集',
                   ),
                   SlidableAction(
-                    onPressed: null,
-                    backgroundColor: Color(0xFF0392CF),
-                    foregroundColor: Colors.white,
-                    icon: Icons.delete,
-                    label: '削除',
-                  ),
+                      onPressed: null,
+                      backgroundColor: Color(0xFF0392CF),
+                      foregroundColor: Colors.red,
+                      icon: Icons.delete,
+                      label: '削除',
+                      onTap: () async {
+                        await showConfirmDialog(context, book, model);
+                      }),
                 ],
               ),
 
@@ -117,6 +119,35 @@ class BookListPage extends StatelessWidget {
           );
         }),
       ),
+    );
+  }
+
+  Future showConfirmDialog(
+    BuildContext context,
+    Book book,
+    BookListModel model,
+  ) {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) {
+        return AlertDialog(
+          title: Text("削除の確認"),
+          content: Text("『${book.title}』を削除しますか？"),
+          actions: [
+            TextButton(
+              child: Text("いいえ"),
+              onPressed: () => Navigator.pop(context),
+            ),
+            TextButton(
+              child: Text("はい"),
+              onPressed: () async {
+                await model.delete(book);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
